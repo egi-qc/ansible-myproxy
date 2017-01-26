@@ -1,0 +1,44 @@
+---
+- name: Install MyProxy package
+  package: name=myproxy-server state=latest
+
+- name: Create myproxy group
+  group:
+    name: myproxy
+    state: present
+
+- name: Create myproxy user
+  user:
+    name: myproxy
+    comment: "User to run the MyProxy service"
+    shell: /sbin/nologin
+    group: myproxy
+
+- name: Create myproxy directory under grid-security
+  file:
+    path: /etc/grid-security/myproxy
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy host private certificate under myproxy directory
+  copy:
+    src: /etc/grid-security/hostkey.pem
+    dest: /etc/grid-security/myproxy/hostkey.pem
+    owner: myproxy
+    group: myproxy
+    mode: 0400
+
+- name: Copy host public certificate under myproxy directory
+  copy:
+    src: /etc/grid-security/hostcert.pem
+    dest: /etc/grid-security/myproxy/hostcert.pem
+    owner: myproxy
+    group: myproxy
+    mode: 0644
+
+- name: Start the service
+  service:
+    name: myproxy-server
+    enabled: yes
+    state: started
