@@ -1,6 +1,8 @@
 ---
 - name: Install MyProxy package
-  package: name=myproxy-server state=latest
+  package: 
+    name: myproxy-server
+    state: latest
 
 - name: Create myproxy group
   group:
